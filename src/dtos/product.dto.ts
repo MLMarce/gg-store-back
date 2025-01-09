@@ -1,4 +1,4 @@
-import { IsArray, IsDecimal, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsDecimal, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 type SizeQuantity = {
     size: string,
@@ -9,7 +9,7 @@ export class CreateProductDto {
     @IsString()
     @IsNotEmpty()
     name: string;
-    @IsDecimal()
+    @IsNumber()
     @IsNotEmpty()
     price: number;
     @IsString()
