@@ -93,8 +93,8 @@ export class UserRepository {
     return 'User with ID ' + id + ' deleted successfully';
   }
   async createAdmin(): Promise<User> {
-    const hashedPassword = await bcrypt.hash('A.p.2024', 10);
-    const emailAdmin = 'advancedparking.2024@gmail.com';
+    const hashedPassword = await bcrypt.hash('enki4016#', 10);
+    const emailAdmin = 'marcelodaniellencina@gmail.com';
 
     const oldUserAdmin = await this.userRepository.findOne({
       where: { email: emailAdmin },
