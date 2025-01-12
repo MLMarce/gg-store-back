@@ -3,11 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   ParseUUIDPipe,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, UpdateProductDto } from 'src/dtos/product.dto';
@@ -42,7 +42,7 @@ export class ProductController {
     return await this.productService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Update a product by ID' })
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
