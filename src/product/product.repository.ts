@@ -35,7 +35,7 @@ export class ProductRepository {
   async getProductById(id: string) {
     const product = await this.productRepository.findOne({
       where: { id: id },
-      relations: { category: true, productSizes: true },
+      relations: { category: true, productSizes: { size: true } },
     });
     if (!product) throw new NotFoundException('Producto no encontrado');
     return product;
@@ -55,42 +55,48 @@ export class ProductRepository {
     newProduct.images = productDto.images;
     newProduct.category = foundCategory;
 
-    await Promise.all(
-      productDto.sizesAndQuantities.map(async (sizeQuantity) => {
-        try {
-          const foundSize = await this.sizeRepository.findOne({
-            where: { name: sizeQuantity.size },
-          });
-          if (!foundSize) throw new NotFoundException('Talle no encontrado');
-          const productSize = new ProductSize();
-          productSize.product = newProduct;
-          productSize.size = foundSize;
-          productSize.stock = sizeQuantity.quantity;
-          await this.productSizeRepository.save(productSize);
-        } catch (error) {
-          throw new BadRequestException(error);
-        }
-      }),
-    );
-    const productSizes = await this.productSizeRepository.find({where: {product: newProduct}})
-    newProduct.productSizes = productSizes
+    const savedProduct = await this.productRepository.save(newProduct);
+    if (!savedProduct)
+      throw new BadRequestException('Error al agregar el producto');
 
-    const createdProduct = await this.productRepository.save(newProduct);
-    if(!createdProduct) throw new BadRequestException("Error al agregar el producto")
+    for (const sizeQuantity of productDto.sizesAndQuantities) {
+      const foundSize = await this.sizeRepository.findOne({
+        where: { name: sizeQuantity.size },
+      });
+      if (!foundSize)
+        throw new NotFoundException(`Talle ${sizeQuantity.size} no encontrado`);
+
+      const productSize = new ProductSize();
+      productSize.product = savedProduct;
+      productSize.size = foundSize;
+      productSize.stock = sizeQuantity.quantity;
+
+      await this.productSizeRepository.save(productSize);
+    }
+    const createdProduct = await this.productRepository.findOne({
+      where: { id: savedProduct.id },
+      relations: { productSizes: {size: true}, category: true },
+    });
     return createdProduct;
   }
 
   async updateProduct(id: string, productDto: UpdateProductDto) {
-    const foundProduct = await this.productRepository.findOne({ where: { id: id } });
+    const foundProduct = await this.productRepository.findOne({
+      where: { id: id },
+    });
     if (!foundProduct) throw new NotFoundException('Producto no encontrado');
     await this.productRepository.update(id, productDto);
-    const updatedProduct = await this.productRepository.findOne({ where: { id: id } });
+    const updatedProduct = await this.productRepository.findOne({
+      where: { id: id },
+    });
 
-    return `producto actualizado correctamente, ${updatedProduct}`
+    return `producto actualizado correctamente, ${updatedProduct}`;
   }
 
   async deleteProduct(id: string) {
-    const foundProduct = await this.productRepository.findOne({ where: { id: id } });
+    const foundProduct = await this.productRepository.findOne({
+      where: { id: id },
+    });
     if (!foundProduct) throw new NotFoundException('Producto no encontrado');
     await this.productRepository.delete({ id: id });
     return `Product with id ${id} has been deleted`;

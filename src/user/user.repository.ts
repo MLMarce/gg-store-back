@@ -16,6 +16,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { EmailSenderRepository } from 'src/email-sender/email-sender.repository';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserRepository {
@@ -23,6 +24,7 @@ export class UserRepository {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly emailSenderRepository: EmailSenderRepository,
+    private configService: ConfigService,
   ) {}
   async getAllUsers(): Promise<User[]> {
     const users = await this.userRepository.find();
@@ -33,7 +35,7 @@ export class UserRepository {
     const user = await this.userRepository.findOne({
       where: { id },
       select: ['id', 'name', 'email', 'phone', 'image', 'status', 'role'],
-      relations: {cart: {cartProducts:true}, reviews: true},
+      relations: { cart: { cartProducts: true }, reviews: true },
     });
     if (!user) throw new NotFoundException('User not found');
     return user;
@@ -53,6 +55,8 @@ export class UserRepository {
     newUser.password = user.password;
     newUser.phone = user.phone;
     newUser.status = 'active';
+    const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
+    newUser.role = user.email === adminEmail ? Role.Admin : Role.User;
     await this.userRepository.save(newUser);
     const createdUser = await this.userRepository.findOne({
       where: { email: newUser.email },
@@ -63,8 +67,20 @@ export class UserRepository {
   }
 
   async createUserAuth(user: User) {
-    const newUser = await this.userRepository.upsert(user, ['email']);
-    if (!newUser) throw new BadRequestException('User already exists');
+    const foundUser = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
+    if (foundUser) throw new BadRequestException('User already exists');
+    const newUser = new User();
+    newUser.name = user.name;
+    newUser.email = user.email;
+    newUser.password = user.password;
+    newUser.image = user.image;
+    newUser.status = 'active';
+    const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
+    newUser.role = user.email === adminEmail ? Role.Admin : Role.User;
+    const savedUser = await this.userRepository.save(newUser);
+    if (!savedUser) throw new BadRequestException('Error saving user');
     const createdUser = await this.userRepository.findOne({
       where: { email: user.email },
     });
