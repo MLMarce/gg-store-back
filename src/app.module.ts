@@ -13,6 +13,7 @@ import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { SizeModule } from './size/size.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { SizeModule } from './size/size.module';
     UserModule,
     CategoryModule,
     ProductModule,
-    SizeModule
+    SizeModule,
+    CartModule
   ],
   controllers: [AppController],
   providers: [AppService],
