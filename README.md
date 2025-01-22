@@ -1,73 +1,134 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Proyecto Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este proyecto es el backend para GG Store. Está desarrollado con Node.js, Nest.js y PostgreSQL, y proporciona una API RESTful para gestionar las operaciones de negocio del sistema.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tabla de contenidos
 
-## Description
+- [Características](#características)
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [API Endpoints](#api-endpoints)
+- [Pruebas](#pruebas)
+- [Contribuciones](#contribuciones)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Características
 
-## Installation
+- **Gestión de Usuarios**: Autenticación, registro y actualización de perfiles.
+- **Gestión de Productos**: CRUD de productos con soporte para imágenes.
+- **Gestión de Órdenes**: Creación y consulta de órdenes de compra.
+- **Seguridad**: Manejo de autenticación con JWT.
+- **Escalabilidad**: Modular y preparado para futuras expansiones.
 
-```bash
-$ npm install
-```
+## Requisitos
 
-## Running the app
+Asegúrate de tener instalados los siguientes programas:
 
-```bash
-# development
-$ npm run start
+- Node.js (versión 16 o superior)
+- PostgreSQL (versión 13 o superior)
+- Git
 
-# watch mode
-$ npm run start:dev
+## Instalación
 
-# production mode
-$ npm run start:prod
-```
+1. Clona el repositorio:
 
-## Test
+   ```bash
+   git clone https://github.com/tu-usuario/tu-repositorio.git
+   cd tu-repositorio
+   ```
 
-```bash
-# unit tests
-$ npm run test
+2. Instala las dependencias:
 
-# e2e tests
-$ npm run test:e2e
+   ```bash
+   npm install
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+3. Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
-## Support
+   ```env
+   PORT=3000
+   DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/nombre_base_datos
+   JWT_SECRET=tu_secreto_jwt
+   ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+4. Configura la base de datos:
 
-## Stay in touch
+   - Ejecuta las migraciones:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+     ```bash
+     npm run migrate
+     ```
 
-## License
+   - (Opcional) Llena la base de datos con datos de prueba:
 
-Nest is [MIT licensed](LICENSE).
+     ```bash
+     npm run seed
+     ```
+
+## Uso
+
+1. Inicia el servidor de desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+2. El backend estará disponible en `http://localhost:3001`.
+
+
+
+## API Endpoints
+
+### Autenticación
+
+- **POST** `/auth/login`: Inicia sesión y retorna un token JWT.
+- **POST** `/auth/register`: Registra un nuevo usuario.
+
+### Productos
+
+- **GET** `/products`: Lista todos los productos.
+- **GET** `/products/:id`: Obtiene un producto por ID.
+- **POST** `/products`: Crea un nuevo producto (requiere rol admin).
+- **PUT** `/products/:id`: Actualiza un producto existente.
+- **DELETE** `/products/:id`: Elimina un producto.
+
+### Órdenes
+
+- **GET** `/orders`: Lista las órdenes del usuario autenticado.
+- **GET** `/orders/:id`: Detalle de una orden específica.
+- **POST** `/orders`: Crea una nueva orden.
+
+## Pruebas
+
+1. Ejecuta las pruebas unitarias:
+
+   ```bash
+   npm run test
+   ```
+
+2. Genera el reporte de cobertura:
+
+   ```bash
+   npm run coverage
+   ```
+
+## Contribuciones
+
+1. Haz un fork del proyecto.
+2. Crea una nueva rama para tus cambios:
+
+   ```bash
+   git checkout -b mi-nueva-rama
+   ```
+
+3. Haz tus cambios y realiza un commit:
+
+   ```bash
+   git commit -m "Descripción de los cambios"
+   ```
+
+4. Envía un pull request.
+
+---
+
+¡Gracias por contribuir! Si tienes alguna pregunta o problema, no dudes en abrir un issue.
