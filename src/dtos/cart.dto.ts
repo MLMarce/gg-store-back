@@ -1,32 +1,48 @@
-
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateCartDto {
-    @IsString()
-    @IsNotEmpty()
-    userId: string;
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
 }
 
 export class UpdateCartDto {
-    @IsArray()
-    @IsOptional()
-    items: { productId: string, quantity: number }[];
-    @IsNumber()
-    @IsOptional()
-    discount: number;
+  @IsNumber()
+  @IsOptional()
+  discount: number;
 }
 
 export class AddProductToCartDto {
-    @IsString()
-    @IsNotEmpty()
-    cartId: string;
-    
-    @IsString()
-    @IsNotEmpty()
-    productSizeId: string;
+  @IsString()
+  @IsNotEmpty()
+  cartId: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    quantity: number;
+  @IsString()
+  @IsNotEmpty()
+  productSizeId: string;
 
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
+}
+
+export class RemoveProductFromCartDto {
+  @IsString()
+  @IsNotEmpty()
+  cartId: string;
+  @IsString()
+  @IsNotEmpty()
+  cartProductId: string;
+  @IsString()
+  @IsNotEmpty()
+  productSizeId: string;
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
 }

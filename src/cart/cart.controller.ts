@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { CreateCartDto, UpdateCartDto } from 'src/dtos/cart.dto';
+import { AddProductToCartDto, CreateCartDto, RemoveProductFromCartDto, UpdateCartDto } from 'src/dtos/cart.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { RolesGuard } from 'src/guards/roles.guards';
 import { Roles } from 'src/decorators/roles.decorators';
@@ -14,7 +14,17 @@ export class CartController {
   async create(@Body() createCartDto: CreateCartDto) {
     return await this.cartService.create(createCartDto);
   }
+  @Post('add-product')
+  @UseGuards(AuthGuard)
+  async addProduct(@Body() product: AddProductToCartDto) {
+    return await this.cartService.addProduct(product);
+  }
 
+  @Delete('remove-product')
+  @UseGuards(AuthGuard)
+  async removeProduct(@Body() product: RemoveProductFromCartDto) {
+    return await this.cartService.removeProduct(product);
+  }
   @Get()
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
