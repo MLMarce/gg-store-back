@@ -43,13 +43,8 @@ Asegúrate de tener instalados los siguientes programas:
    npm install
    ```
 
-3. Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+3. Crea un archivo `.env` en la raíz del proyecto.
 
-   ```env
-   PORT=3000
-   DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/nombre_base_datos
-   JWT_SECRET=tu_secreto_jwt
-   ```
 
 4. Configura la base de datos:
 
